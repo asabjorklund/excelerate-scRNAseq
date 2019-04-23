@@ -4,8 +4,7 @@ Quality Control
 Overview
 ========
 
-Quality control of data for filtering cells using Seurat and Scater packages.
------------------------------------------------------------------------------
+#### Quality control of data for filtering cells using Seurat and Scater packages.
 
 In this tutorial we will look at different ways of doing filtering and cell and exploring variablility in the data.
 
@@ -36,8 +35,7 @@ suppressMessages(require(scater))
 suppressMessages(require(Matrix))
 ```
 
-Read data
----------
+#### Read data
 
 Here, we use the function Read10X\_h5 to read in the expression matrices.
 
@@ -113,7 +111,7 @@ table(Idents(alldata))
     ## p3.1k v2.1k v3.1k 
     ##   713   996  1222
 
-### Calculate mitochondrial proportion
+#### Calculate mitochondrial proportion
 
 Seurat automatically calculates some QC-stats, like number of UMIs and features per cell. Stored in columns nCount\_RNA & nFeature\_RNA of the metadata.
 
@@ -127,7 +125,7 @@ percent.mito <- colSums(C[mt.genes,])/colSums(C)*100
 alldata <- AddMetaData(alldata, percent.mito, col.name = "percent.mito")
 ```
 
-### Calculate ribosomal proportion
+#### Calculate ribosomal proportion
 
 In the same manner we will calculate the proportion gene expression that comes from ribosomal proteins. NOTE - add text on why!
 
@@ -197,7 +195,7 @@ FeatureScatter(alldata, feature1 = "nCount_RNA", feature2 = "nFeature_RNA", cell
 Filtering
 ---------
 
-### Mitochondrial filtering
+#### Mitochondrial filtering
 
 We have quite a lot of cells with high proportion of mitochondrial reads. It could be wise to remove those cells, if we have enough cells left after filtering. Another option would be to either remove all mitochondrial reads from the dataset and hope that the remaining genes still have enough biological signal. A third option would be to just regress out the percent.mito variable during scaling.
 
@@ -225,7 +223,7 @@ VlnPlot(data.filt, features = "percent.mito")
 
 As you can see, there is still quite a lot of variation in percent mito, so it will have to be dealt with in the data analysis.
 
-### Gene detection filtering
+#### Gene detection filtering
 
 Extremely high number of detected genes could indicate doublets. However, depending on the celltype composition in your sample, you may have cells with higher number of genes (and also higher counts) from one celltype.
 
@@ -265,7 +263,7 @@ ncol(data.filt)
 
     ## [1] 2531
 
-### Plot QC-stats again
+#### Plot QC-stats again
 
 Lets plot the same qc-stats another time.
 
@@ -427,7 +425,10 @@ colnames(rowData(sce))
 
 We will give examples on how to plot some of these.
 
-### Most expressed features
+Plot QC
+-------
+
+#### Most expressed features
 
 Let's look at what the top 50 expressed genes are. This can be valuable for detecting genes that are overabundant that may be driving a lot of the variation.
 
@@ -439,7 +440,7 @@ plotHighestExprs(sce, exprs_values = "counts")
 
 As you can see, MALAT1 corresponds to an average of around 4% of the counts. And in some cells as high as ~30% of the counts. I would consider removing that gene before further analysis and clustering. Also, the mitochondrial genes correspond to a high proportion of the total counts.
 
-### Cumulative expression
+#### Cumulative expression
 
 Plot the relative proportion of the library size that is accounted for by the most highly expressed features for each cell (default 500 genes). This can help us look for differences in expression distributions between samples.
 
@@ -450,7 +451,7 @@ plotScater(sce, block1 = "ident", nfeatures = 1000)
 
 ![](Quality_control_files/figure-markdown_github/seq.sat-1.png)
 
-### Plot gene stats
+#### Plot gene stats
 
 The function plotRowData can plot any of the stats in rowData, for instance mean expressioni vs number of cells with detection.
 
@@ -460,7 +461,7 @@ plotRowData(sce, x = "n_cells_by_counts", y = "mean_counts")
 
 ![](Quality_control_files/figure-markdown_github/plot.row-1.png)
 
-### Plot cell stats
+#### Plot cell stats
 
 In the same manner plotColData can plot any of the qc-measures for cells.
 
@@ -476,8 +477,7 @@ multiplot(p1, p2, p3, cols = 2)
 
 ![](Quality_control_files/figure-markdown_github/plot.col-1.png)
 
-Identify outliers in QC-stats
------------------------------
+#### Identify outliers in QC-stats
 
 On method of identifying low quality cells is to run PCA on all the qc-stats and then identify outliers in PCA space.
 
@@ -599,7 +599,7 @@ PC1 clearly correlates to the distribution of the data, e.g. the proportion of c
 
 It is also clear that many of the top PCs (especially PCs 2,3,6,7,8) are largely explained by the different samples (ident) or just by v2 vs v3 (Chemistry).
 
-### Session info
+#### Session info
 
 ``` r
 sessionInfo()
